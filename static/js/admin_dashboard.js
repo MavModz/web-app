@@ -40,3 +40,9 @@ dateInput.addEventListener('change', (event) => {
   const selectedDate = event.target.value;
   console.log('Selected date:', selectedDate);
 });
+
+// Logout
+const logoutBtn = document.querySelector('a[href="/logout"]'); // Update selector to match your HTML structure
+logoutBtn.addEventListener("click", () => {
+    window.location.href = "/logout"; // Update the URL to match your Flask logout route
+});

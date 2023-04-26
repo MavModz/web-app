@@ -30,14 +30,20 @@ def login():
 # Logout A User
 @app.route('/logout')
 def logout():
-    session.pop('user_id')
+    # Remove user_id and user_type from session
+    session.pop('user_id', None)
+    session.pop('user_type', None)
     return redirect('/')
 
 # Route for dashboard
 @app.route('/dashboard')
 def dashboard():
     if 'user_id' in session:
-        return render_template('dashboard.html')
+        # Check user type in session
+        if 'user_type' in session and session['user_type'] == 'admin':
+            return render_template('admin_dashboard.html')
+        else:
+            return render_template('dashboard.html')
     else:
         return redirect('/login')
 
@@ -58,9 +64,14 @@ def login_validation():
     users = cursor.fetchall()
     if len(users) > 0:
         session['user_id'] = users[0][0]
-        return jsonify({'status': 'success', 'message': 'Login successful!'})  # Return success status and message as JSON response
+        # Store user_type in session
+        session['user_type'] = users[0][1]
+        if users[0][1] == 'admin':
+            return jsonify({'status': 'success', 'message': 'Login successful!', 'redirect': '/admin'})  # Return success status and message as JSON response
+        else:
+            return jsonify({'status': 'success', 'message': 'Login successful!', 'redirect': '/dashboard'})  # Return success status and message as JSON response
     else:
-        return jsonify({'status': 'failure', 'message': 'Email or password is incorrect!'})  # Return failure status and message as JSON response
+        return jsonify({'status': 'failure', 'message': 'Email or password is incorrect!'})  # Return failure status and message as JSON response 
 
 # REGISTER A USER
 @app.route('/add_user', methods=['POST'])
@@ -99,9 +110,9 @@ def get_user_name():
         return jsonify({'success': False, 'message': 'User not logged in'})    
 
 # Route for admin dashboard
-@app.route('/admin')
-def admin_dashboard():
-    return render_template('admin_dashboard.html')
+# @app.route('/admin')
+# def admin_dashboard():
+#     return render_template('admin_dashboard.html')
 
 # Fetch Users from Database
 @app.route('/user_details', methods=['GET'])
