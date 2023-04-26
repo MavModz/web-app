@@ -109,11 +109,6 @@ def get_user_name():
     else:
         return jsonify({'success': False, 'message': 'User not logged in'})    
 
-# Route for admin dashboard
-# @app.route('/admin')
-# def admin_dashboard():
-#     return render_template('admin_dashboard.html')
-
 # Fetch Users from Database
 @app.route('/user_details', methods=['GET'])
 def user_details():
