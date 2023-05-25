@@ -32,7 +32,7 @@ def login():
 def logout():
     # Remove user_id and user_type from session
     session.pop('user_id', None)
-    session.pop('user_type', None)
+    session.pop('name', None)
     return redirect('/')
 
 # Route for dashboard
@@ -40,7 +40,7 @@ def logout():
 def dashboard():
     if 'user_id' in session:
         # Check user type in session
-        if 'user_type' in session and session['user_type'] == 'admin':
+        if 'name' in session and session['name'] == 'admin':
             return render_template('admin_dashboard.html')
         else:
             return render_template('dashboard.html')
@@ -65,7 +65,7 @@ def login_validation():
     if len(users) > 0:
         session['user_id'] = users[0][0]
         # Store user_type in session
-        session['user_type'] = users[0][1]
+        session['name'] = users[0][1]
         if users[0][1] == 'admin':
             return jsonify({'status': 'success', 'message': 'Login successful!', 'redirect': '/admin'})  # Return success status and message as JSON response
         else:
@@ -143,7 +143,7 @@ def reset_password():
 
     # Check if the update was successful
     if cursor.rowcount > 0:
-        return jsonify({'status': 'success', 'message': 'Password updated successfully!'})
+        return jsonify({'status': 'success', 'message': 'Password updated successfully!', 'redirect': '/login'})
     else:
         return jsonify({'status': 'failure', 'message': 'Failed to update password. User not found or invalid email!'})
 
